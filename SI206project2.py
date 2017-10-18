@@ -2,7 +2,7 @@
 
 ## COMMENT HERE WITH:
 ## Your name: Gabe Solomon
-## Anyone you worked with on this project:
+## github link" https://github.com/gabesolo/SI-206/blob/master/SI206project2.py
 
 ## Below we have provided import statements, comments to separate out the 
 #parts of the project, instructions/hints/examples, and at the end, TESTS.
@@ -29,7 +29,6 @@ import urllib.request, urllib.parse, urllib.error
 def find_urls(s):
     l = s.split()
     l2 = []
-    l3 = []
     for x in l:
         if re.findall('^http://.*\..{2}', x):
             l2.append(x)
@@ -45,7 +44,7 @@ def find_urls(s):
 ## http://www.michigandaily.com/section/opinion
 
 def grab_headlines():
-    url = 'file:///C:/206/Project2-master/opinion.html'
+    url = 'https://www.michigandaily.com/section/opinion'
     html = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(html, 'html.parser')
     soup = soup.find(class_="view view-most-read view-id-most_read view-display-id-panel_pane_1 view-dom-id-99658157999dd0ac5aa62c2b284dd266")
@@ -81,8 +80,10 @@ def get_umsi_data():
     for x in content:
         title = x.find(class_="field field-name-field-person-titles field-type-text field-label-hidden")
         title_list.append(title.text)
-    for x in name_list:
-        umsi_titles[x] = title_list[name_list.index(x)]
+    x = 0
+    while x < len(name_list):
+        umsi_titles[name_list[x]] = title_list[x]
+        x += 1
 
     next_url = soup.find(class_='pager')
 
