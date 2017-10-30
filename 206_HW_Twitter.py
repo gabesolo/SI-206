@@ -5,9 +5,8 @@ import json
 
 ## SI 206 - HW
 ## COMMENT WITH:
-## Your section day/time:
+## Your section day/time: Thu 8:30
 ## Any names of people you worked with on this assignment:
-
 
 ## Write code that uses the tweepy library to search for tweets with three different phrases of the 
 ## user's choice (should use the Python input function), and prints out the Tweet text and the 
@@ -46,10 +45,10 @@ import json
 ## Get your secret values to authenticate to Twitter. You may replace each of these 
 ## with variables rather than filling in the empty strings if you choose to do the secure way 
 ## for EC points
-consumer_key = "" 
-consumer_secret = ""
-access_token = ""
-access_token_secret = ""
+consumer_key = 
+consumer_secret = 
+access_token = 
+access_token_secret = 
 ## Set up your authentication to Twitter
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
@@ -64,16 +63,56 @@ api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
 ## 1. Set up the caching pattern start -- the dictionary and the try/except 
 ## 		statement shown in class.
 
+CACHE_FNAME = 'twitter_cache.json' # String for your file. We want the JSON file type, bcause that way, we can easily get the information into a Python dictionary!
+
+try:
+    cache_file = open(CACHE_FNAME, 'r') # Try to read the data from the file
+    cache_contents = cache_file.read()  # If it's there, get it into a string
+    CACHE_DICTION = json.loads(cache_contents) # And then load it into a dictionary
+    cache_file.close() # Close the file, we're good, we got the data in a dictionary.
+    print(success)
+except:
+    CACHE_DICTION = {}
 
 
 ## 2. Write a function to get twitter data that works with the caching pattern, 
 ## 		so it either gets new data or caches data, depending upon what the input 
 ##		to search for is. 
 
-
+def get_tweets():
+    term = input("Enter tweet term: ")
+    if term in CACHE_DICTION:
+        print("Data was in the cache")
+        return CACHE_DICTION[term]
+    else:
+        print("Making a request for new data...")
+        data = api.search(q=term)
+        try:
+            CACHE_DICTION[term] =  data
+            dumped_json_cache = json.dumps(CACHE_DICTION)
+            fw = open(CACHE_FNAME,"w")
+            fw.write(dumped_json_cache)
+            fw.close() # Close the open file
+            return CACHE_DICTION[term]
+        except:
+            print("Wasn't in cache and wasn't valid search either")
+            return None
 
 ## 3. Using a loop, invoke your function, save the return value in a variable, and explore the 
 ##		data you got back!
+
+x = 0
+
+while x < 3:
+    results = get_tweets()
+
+    tweets = []
+    for i in results["statuses"]:
+        tweets.append(i["text"])
+    for j in tweets[:4]:
+        print(j)
+    x += 1
+
 
 
 ## 4. With what you learn from the data -- e.g. how exactly to find the 
